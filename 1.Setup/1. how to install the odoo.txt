@@ -32,7 +32,14 @@ admin_passwd = admin123 # for login to the admin
 -----------------------------------------------------------
 cd /home/ashraful/Revision-Codes/Odoo19/practise_1/odoo
 source venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements.txt  (before run this command copy pase the those requiremts.txt on the odoo project file)
+
+cd /home/ashraful/Revision-Codes/Odoo19/practise_1/odoo
+python odoo-bin -c odoo.conf  (for run the odoo)
+
+#default odoo user : 
+usrname: odoo
+passwd: odoo
 
 
 
