@@ -631,3 +631,42 @@ Cash Cr
 এইভাবে চিন্তা করলে আর মুখস্থ করতে হবে না। Account-এর নাম দেখেই বুঝতে পারবে সেটা **Asset, Liability, Equity, Income, নাকি Expense**, আর সেখান থেকেই **DAE না LIC** এবং **Debit না Credit** নিজে থেকেই বের হয়ে যাবে।
 
 এরপর চাইলে আমি **Odoo 19-এর Chart of Accounts-এর ১০০+ common account** (যেমন Accounts Receivable, Accounts Payable, VAT Input, VAT Output, COGS, Inventory Valuation, Bank Suspense, Outstanding Receipts ইত্যাদি) একে একে **DAE/LIC + Debit/Credit + Real-life Example** সহ শেখাতে পারি। এতে Odoo Accounting অনেক সহজ হয়ে যাবে।
+
+===================  Last Rules =================
+
+এই ৪টা প্রশ্নই যথেষ্ট। এগুলোর সাথে Debit/Credit এভাবে মিলিয়ে রাখো:
+
+| প্রশ্ন                | Account Type       | Increase হলে      |
+| --------------------- | ------------------ | ----------------- |
+| 🟢 **এটা কি আমার?**   | Asset              | **Debit (Dr)** ✅  |
+| 🔴 **এটা কি অন্যের?** | Liability / Equity | **Credit (Cr)** ✅ |
+| 🟠 **আমি খরচ করলাম?** | Expense            | **Debit (Dr)** ✅  |
+| 🔵 **আমি আয় করলাম?**  | Income             | **Credit (Cr)** ✅ |
+
+## ১০ সেকেন্ডের ম্যাজিক
+
+```
+আমার জিনিস      → Dr
+অন্যের জিনিস    → Cr
+খরচ             → Dr
+আয়             → Cr
+```
+
+আরও ছোট করে মনে রাখো:
+
+> **My = Dr**
+> **Other = Cr**
+> **Expense = Dr**
+> **Income = Cr**
+
+অর্থাৎ,
+
+* 💰 Cash পেলাম → **Dr**
+* 💻 Laptop কিনলাম → **Dr**
+* 💸 Loan নিলাম → **Cr**
+* 🧾 Sales করলাম → **Cr**
+* 🏠 Rent দিলাম → **Dr**
+* 👨‍💼 Salary দিলাম → **Dr**
+
+এই একটাই চিন্তা Odoo Accounting-এর ৮০% Debit/Credit বুঝতে সাহায্য করবে।
+
