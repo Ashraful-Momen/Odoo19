@@ -2,7 +2,7 @@
 
 ### ১. Accounting-এর মূল সমীকরণ
 
-Asset=Liability+EquityAsset = Liability + EquityAsset=Liability+Equity
+Asset = Liability + Equity
 
 বাংলায়:
 
