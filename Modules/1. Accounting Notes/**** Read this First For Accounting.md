@@ -170,7 +170,7 @@ Journal হলো transaction log। প্রতিটি transaction-এ ক�
 
 Odoo বাধ্য করে:
 
-∑Debit=∑Credit\sum Debit = \sum Credit∑Debit=∑Credit
+∑Debit=∑Credit
 
 এতে সমীকরণ সবসময় ব্যালান্স থাকে।
 
