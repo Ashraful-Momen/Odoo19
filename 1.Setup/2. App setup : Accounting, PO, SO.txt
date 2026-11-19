@@ -193,10 +193,39 @@ in the vendor portion you may change the account for AR / AP as you want but I s
 
                step 4: Inventory -> Menu: Product -> select Product (from list view) -> click : Magic button (re-ordering rule) -> set : Triger : auto/menual (auto : triger auto order), min(amount of quantity) , max(fill-up re-order quantity) -> save
 
+----------------- End : Inventory  -------------------
 
-# 
 
------------------ End : Purchase -------------------
+
+----------------- Start : sales  -------------------
+
+# setup : goto app : ***** apps : install the 'sales'
+----------
+
+# setup customer : Accounting -> Menu : Customers -> select : Customers -> click : new -> setup details of custoemr person / company . -> set: account AR/AP. -> Save . 
+
+# Sales Order : Sales -> Menu : Sales -> set : customer , product , date , quantity , unit price and others -> confirm (confirm the sales order ) / send quotation (for quotation ).
+
+# Check sales order : Sales ->  Menu : Order ->  click : Order -> select : order from the list view. 
+
+# Create invoice : step 1: Sales ->  Menu : Order ->  click : Order -> select : order from the list view. -> create invoice -> Regular Invoice -> click : Create draft -> set: customer invoice ref,  invoice date , due date : last date of the payment .-> confirm -> click : pay (For creating payment) -> set: journal , Pyament method , Bank -> create payment ;   
+                   
+                   step 2: (Create Bank Statement) ->  Accounting -> Menu : Accounting -> Bank Statement -> set : refence, date , label , partner, amount . 
+
+                   step 3 (Reconcilation with banck statement): -> Accounting -> Dashboard -> Reconcilation-> click : reconcile 1 item -> Menu (Left Side) , click : bank statement -> click for bill matching: (Right side from the bill in the below portion list ) -> if match then you can see the 'Reconcile button ' -> click : Reconcile btn.
+
+# Delivery Product From Inventory : option 1 -> Sales -> Menu : order -> select order -> click : magic btn (Delivery) -> set : quantity -> validate. 
+                                    option 2 -> Inventory -> select : Overview (Devliery: warehouse) -> set : quantity -> validate. 
+
+# Check Accounting : Accounting -> Menu -> Accouting -> select : sales -> now you can see the expense and sales. 
+# Check Ladger     : Accounting -> Menu -> Accouting -> select : GL Ladger -> now you can see the expense and sales. 
+
+# Check the Profit and Loss : Accounting -> Menu -> Accouting -> select : Report -> select : Profit and Loss. 
+
+
+
+
+----------------- End : sales  -------------------
 
 
 
