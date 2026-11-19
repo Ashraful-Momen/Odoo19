@@ -29,6 +29,7 @@ Apps -> accounting moudle -> Bank -> configuration -> click 'outgoing Payments' 
 #***** apps : install the 'purchase'
 #***** apps : install the 'sales'
 #***** apps : install the 'contact' 
+#***** apps : install the 'Manufacture' (mrp)
 ----------------------------------------------------------------------------------
 
 
@@ -226,6 +227,55 @@ in the vendor portion you may change the account for AR / AP as you want but I s
 
 
 ----------------- End : sales  -------------------
+
+
+----------------- Start : Menufacture  -------------------
+
+#setup : ***** apps : install the 'Manufacture' (mrp)
+--------
+
+For make a finish goods : add the item in to the inventory as products . 
+
+# parts creating       : Inventory -> Menu : Products -> click : new -> set : prats detals, sale and cost price,  tik: purchase-only -> set : accouting Expense only   ->  save . 
+
+# Finish Good creating : Inventory -> Menu : Products -> click : new -> set : prats detals, set sale price, tik : sales + purchase, set : Incomming Account (expense not need cause we sale only )   ->  save . 
+
+# Purchase the Parts : Purchase -> Menu : Order -> click : new -> set : Products, quantity , price , vendor . -> confirm order . 
+
+# Receive Order : Purchase -> Menu : Order -> select : order -> click : magic button (Recepits) -> validate .  
+
+# check the order item (Parts) -> Purchase -> Menu : Product -> select : Part item -> then you can see the update quantity. 
+
+# **** for the Manufacture : Manufacture -> New -> set: Finish item , quantity, set : Parts (Manufacture items), set: consume (Need toatl amount for ready the finish goods)-> confirm. -> click : generate Serial->  click : Produce All. 
+
+# check the Finish goods : Manufacture -> Manu : Products -> check the finish good amount . 
+
+
+
+# Making a Template for Manufacture : Manufacture -> Product -> Bill of Materials (BOM) -> click : new ->  set: Product: (select the Finish goods) , quantity, -> click : add a line (Parts items) , quantity. -> save . 
+
+# to show the template : Manufacture -> Menu : Products -> Bill of Material -> select:  from the list views. -> select the Template. 
+
+# Manufacture from the template : Manufacture -> Menu : Operation -> Click : Manufacture Order -> click: new -> select  : Bill of Material (Select the template) , set other details .  -> confirm. -> click :  generate Serial -> click : Produce All. 
+
+# check the Finish goods : Manufacture -> Manu : Products -> check the finish good amount . 
+
+
+----------------- End : Menufacture  -------------------
+
+
+
+----------------- Start : System User  -------------------
+
+
+
+
+=> Settings : click : manage user . -> click : new button . -> set : deatils -> tab: access right -> select all permission .  -> save . 
+
+# change user passoword : Settings -> select : manage user -> select : user from the list -> tab : security -> change password -> save . 
+
+
+----------------- End : Menufacture  -------------------
 
 
 
