@@ -23,6 +23,7 @@ pip install wkhtmltopdf
 Apps -> accounting moudle -> Bank -> configuration -> click 'incoming Payments' -> click tab : set Outstanding Recepits  => "101403Outstanding Receipts" 
 Apps -> accounting moudle -> Bank -> configuration -> click 'outgoing Payments' -> click tab : set Outstanding payment  => "101404 Outstanding Payments" 
 
+
 # goto app  : 
 --------------
 #***** apps : install the 'stock'
@@ -30,6 +31,14 @@ Apps -> accounting moudle -> Bank -> configuration -> click 'outgoing Payments' 
 #***** apps : install the 'sales'
 #***** apps : install the 'contact' 
 #***** apps : install the 'Manufacture' (mrp)
+
+=> For the HRM : 
+----------------
+#***** apps : install the 'Employees' (hr)
+#***** apps : install the 'Time Off' (hr_holidays)
+#***** apps : install the 'Expense' (hr_expense)
+#***** apps : install the 'Attandances' (hr_attendance)
+
 ----------------------------------------------------------------------------------
 
 
@@ -265,6 +274,109 @@ For make a finish goods : add the item in to the inventory as products .
 
 
 
+----------------- Start : HRM  -------------------
+=> For the HRM App install: 
+-----------------------------
+#***** apps : install the 'Employees' (hr)
+#***** apps : install the 'Time Off' (hr_holidays)
+#***** apps : install the 'Expense' (hr_expense)
+#***** apps : install the 'Attandances' (hr_attendance)
+
+#install the payroll : From the thirdparty already we download it 
+ -> goto odoo.conf -> add : path -> thirdparty_addons 
+ -> restart application from terminal -> update app list from odoo dashboard 
+
+ -> goto app -> search: hr_payrool -> active 
+ -> goto app -> search: hr_payrool_account_community -> active 
+
+
+
+
+
+#create new Employees : 
+-----------------------
+
+=> **** Create Employee: Menu => Employees => click : new 
+
+
+=> select tab : work
+    => setup => emply details , Department , compnay , job position , job title , manager. 
+
+=> select tab : resume
+    => select : create resume Line : expirence , education , Traninig
+    => setup => add certificate , skills  
+
+=> select tab : personal
+    => select : Employees personal all kinds of information 
+    => setup => add certificate , skill
+
+
+=> select tab : Payrol
+    => select :  
+    => setup => add wage (set:salary), Set Working Hour Must 
+
+=> select tab : Settings 
+    => select :  Batch ID (employee id)
+    => setup => Badge ID , Expense (offical cost : petty case)
+
+
+#**** Employees to system user create : 
+-----------------------------------------
+
+after create a employee just, click => create user -> save. 
+
+
+#check user which already created : 
+------------------------------------
+Menu => Settings => Manage user -> click the user from the list view . 
+
+**** change password : Menu => Settings => Manage user -> click the user from the list view . -> tab: security -> set : password -> save. 
+
+
+#set salary rules (total we have to set 100%): 
+-----------------------------------------------
+Menu => Payroll => Menu : configuration -> select : salary rules -> set : Basic Salary , Hose Rent Allowance , Travel Allowance , Meal Allowance , etc Allowance - whatever you need 
+
+**** salary rules : set salary amount fixed / percentaage / python code : Menu => Payroll => Menu : configuration -> select : salary rules -> tab : General  => set :  Ammount Type : select percentage : percentage: 60%, select Percentage base on:  'contract.wage' (this is the employee salary table). -> save . 
+                                                                                                                            -> tab : Accounting => set: Debit Account : 630000 Salary Expenses(payment the salary ammount) And set : Credit Account :101401 Bank -> save. 
+                                                                                                                        
+
+
+**** salary rules: set house rent (as 40% cause we already set salaray as => 60% total 100%) : Menu => Payroll => Menu : configuration -> select : salary rules -> select  : House Rent Allowance  (From the List view ) => tab : generate => set :  Ammount Type : select percentage : percentage: 40%, select Percentage base on:  'contract.wage' (this is the employee salary table). -> save . 
+                                                                                                                            -> tab : Accounting => set: Debit Account : 630000 Salary Expenses(payment the salary ammount) And set : Credit Account :101401 Bank -> save.
+
+
+****salary Structure : Already we create the salary Rules so we need set the salary goto salary structure to set for the Employee for Work Hour and Employee Get from this structure : Menu => Payroll => Menu : configuration -> select : salary Structure-> select :  from the List View -> set : add a line =>  Basic Salary (which was 60% ) , Hose Rent Allowance (which was 40%) . -> save . 
+   
+
+**** Create Employee Paysleep : Payroll -> Menu -> Employee Payslip -> click : new btn ->  select : employee (Sharna) -> select : Salary Structure . -> tab : accounting information  -> set : salaray journal : Miscellaneous Operations -> click : 'Compute Sheet' btn -> tab : salary Computation (we can the here the house and basic salary rules with amoutn ) -> click : confirm . 
+se
+
+
+**** check the salary payslip : Menu -> Employee ->select employee (From the List View) ->  click : magic button (Payslip) -> for print -> select : payslip list view -> click : Print button ;  
+
+
+
+
+
+
+**** Attandances : -> Attandances -> Menu -> new -> fill up details : employee , checkIN and checkOUT -> save.   
+
+
+**** Leave : TimeOff -> Menu : configuration -> select : Time off type (for the leaves : Paid / sick leave ). -> select : paid time off -> set : approval - By time of officer (who approval), set Nofify HR (who can see the notification in the system ) , set Allocaltion Approval : timeoff Officer. (who approval allocate the leave) -> save . 
+             TimeOff -> Menu : Management -> select : Allocation -> click : new  -> set : Type off Type : Paid Time off ,  set : employee (sharna ) , set : Allocaltion (how many days ) , set : validation priod (for the leave timeline) -> save -> Approve. 
+            # Checking the paid leave total Allocaltion days : TimeOff -> Menu : Management -> select : Allocation -> see the 'current balance' . 
+            # How to take leave (Employee do this ): TimeOff -> Menu : Management -> select : Time Off -> Set : dates, reason , attace file , Time of Type : paid . -> save 
+            # Approver Person Make Decicison (Approved or NOt ): TimeOff -> Management -> Time off -> select : employee form the list view -> Approve.  
+            # Checking the paid leave total Allocaltion days : TimeOff -> Menu : Management -> select : Allocation -> see the 'current balance' . 
+
+
+**** Set Holidays :  TimeOff -> Menu : configuration -> select : Public Holidays -> click : new -> set : holiday name , start / end - date , working houre  -> save 
+
+
+
+
+
 ----------------- Start : System User  -------------------
 
 
@@ -274,8 +386,12 @@ For make a finish goods : add the item in to the inventory as products .
 
 # change user passoword : Settings -> select : manage user -> select : user from the list -> tab : security -> change password -> save . 
 
+# create employee / user => Settings -> manage user -> select : employee - user from the list view . -> click : create employee -> save . 
 
------------------ End : Menufacture  -------------------
+
+
+
+----------------- End : User  -------------------
 
 
 
