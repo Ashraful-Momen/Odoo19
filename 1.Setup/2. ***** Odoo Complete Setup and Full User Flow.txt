@@ -116,6 +116,46 @@ in the vendor portion you may change the account for AR / AP as you want but I s
 # PO : Purchase -> click : new button ->  select : vendor -> click : add new line -> select product -> quantity : set -> click : confirm btn.  | button : 
 
 
+------------------------ start :additional part for add aditional cost to the product ----------------------
+
+# step 1: Purchase Ordwer (PO) with additional Cost SETUP **** => add as like  Transport or other cose (Create a product as transport cost (as service) then add this product to other product as additional cost ): Purchase -> Menu : Product -> click : new btn -> tab : General Info ->  set product name, set : Product Type :  service , tab: Purchase -> tick : Is a Landed Cost , set : Default Split Method : (By Quentity/weight/volume) -> save . 
+
+# step 2:  Order with addtional cost -> Purchase -> Menu -> Orders -> select : purchase order -> click : new -> set proudct name , set : vendor , set : add a product (****select the main product) + add a product (****select the additional cost), set : vendor , vendor reference , date and others -> confirm order .  
+
+
+
+# step 3 (another way to add the aditional cost to the PO) :
+------------------------------------------------------------
+
+
+আপনার নোটটি মডিফাই করে নিচে দেওয়া হলো—যাতে বিলের লাইনে `Product` কলাম না থাকলে কীভাবে অন করবেন এবং প্রোডাক্ট তৈরির সময় `Purchase` অপশনটি টিক দেওয়ার বিষয়টি পরিষ্কারভাবে যুক্ত থাকে:
+
+
+----------------- Start : Landed Cost (Extra Expense on Product) -------------------
+
+# Prerequisite            : Apps -> install : 'Purchase' (purchase) module (so Product column appears on Vendor Bills) .
+
+# Step 1 (Active Option)  : Inventory -> Menu : Configuration -> Settings -> Valuation section -> tik : Landed Costs -> set : Default Journal -> save . 
+                            (Note: Product Category must be FIFO/AVCO & Automated Valuation) .
+
+# Step 2 (Expense Item)   : Inventory -> Menu : Products -> New -> set : Name (e.g., Transport Cost , Warehouse Rent) , set : Product Type : Service , tik : Purchase (top checkbox under product name) 
+                            -> tab : Purchase -> tik : Is a Landed Cost , set : Split Method (e.g., By Quantity) -> save .
+
+# Step 3 (Vendor Bill)    : Accounting -> Menu : Vendors -> Bills -> New -> (if 'Product' column is hidden in Invoice Lines, click the right-side filter/slider icon on the table header and tik : Product) 
+                            -> click : Add a line -> select Product : Transport Cost , set : Price -> Confirm -> click : 'Create Landed Costs' btn .
+
+# Step 4 (Apply to Stock) : Landed Cost Form -> select : Transfers (Receipt number e.g., WH/IN/0001) -> click : 'Compute' btn (check Valuation Adjustments tab) -> click : 'Validate' btn .
+
+----------------- End : Landed Cost -------------------
+
+
+
+
+
+------------------------ start :additional part for add aditional cost to the product ----------------------
+
+
+
 # ****Back Order (if needed) : Option 1: Purchase -> Menu : Order -> click : purchase Order -> select : order (From List ) -> click : Receive btn -> select : order (status: ready ) -> set : quantity 3 (if you get only 3 out of 5) -> validate -> click : ceate backorder. 
                                Option 2: Inventory -> Overview -> select : Receipts (which warehouse) -> select : order (status: ready ) -> set : quantity 3 (if you get only 3 out of 5) -> validate -> click : ceate backorder. 
 
@@ -434,3 +474,14 @@ se
 
 
 
+----------------- Start : COGS (Cost of Goods Sold) Setup -------------------
+
+# Step 1 (Product Category) : Inventory -> Menu : Configuration -> select : Product Categories -> select category (e.g., All) 
+                            -> set : Costing Method : FIFO (or AVCO) , set : Inventory Valuation : Automated (Perpetual)[cite: 5] 
+                            -> Account Properties => set : Expense Account : 500000 Cost of Goods Sold , set : Stock Valuation Account , Stock Input Account , Stock Output Account -> save[cite: 5].
+
+# Step 2 (Product Setup)    : Inventory -> Menu : Products -> select Product -> set : Product Type : Goods (Track Inventory: checked) , set : Product Category , set : Cost -> save[cite: 5].
+
+# Step 3 (Check COGS)       : Sales -> Delivery Validate -> Invoice Confirm => Accounting -> Menu : Reporting -> select : Profit and Loss (check Cost of Goods Sold)[cite: 5].
+
+----------------- End : COGS Setup -------------------
