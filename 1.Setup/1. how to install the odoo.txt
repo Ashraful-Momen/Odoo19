@@ -17,9 +17,10 @@ db_name = smart_hitech
 db_maxconn = 64
 # addons_path = addons
 
-addons_path = /home/ashraful/Revision-Codes/Odoo19/practise_1/odoo/addons, # root folder addons path
-             /home/ashraful/Revision-Codes/Odoo19/practise_1/odoo/odoo/addons, # odoo -> odoo -> addons path
-             /home/ashraful/Revision-Codes/Odoo19/practise_1/odoo/custom_addons # custom addons path
+addons_path = /home/ashraful/Revision-Codes/Odoo19/practise_1/odoo/addons,                                           # root folder addons path
+             /home/ashraful/Revision-Codes/Odoo19/practise_1/odoo/odoo/addons,                                       # odoo -> odoo -> addons path
+             /media/ashraful/b8df7bae-e9ee-4f20-83ce-3bc9e63a05d42/Practise_Code/Odoo19/1000Fix/odoo/custom_addons,
+             /media/ashraful/b8df7bae-e9ee-4f20-83ce-3bc9e63a05d42/Practise_Code/Odoo19/1000Fix/odoo/third_party_addons
              
 http_port = 8069 #where see the odoo ui in web_browser
 longpolling_port = 8072
