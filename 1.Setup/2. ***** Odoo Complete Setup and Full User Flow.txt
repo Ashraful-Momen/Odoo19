@@ -470,18 +470,3 @@ se
 ----------------- End : User  -------------------
 
 
-
-
-
-
------------------ Start : COGS (Cost of Goods Sold) Setup -------------------
-
-# Step 1 (Product Category) : Inventory -> Menu : Configuration -> select : Product Categories -> select category (e.g., All) 
-                            -> set : Costing Method : FIFO (or AVCO) , set : Inventory Valuation : Automated (Perpetual)[cite: 5] 
-                            -> Account Properties => set : Expense Account : 500000 Cost of Goods Sold , set : Stock Valuation Account , Stock Input Account , Stock Output Account -> save[cite: 5].
-
-# Step 2 (Product Setup)    : Inventory -> Menu : Products -> select Product -> set : Product Type : Goods (Track Inventory: checked) , set : Product Category , set : Cost -> save[cite: 5].
-
-# Step 3 (Check COGS)       : Sales -> Delivery Validate -> Invoice Confirm => Accounting -> Menu : Reporting -> select : Profit and Loss (check Cost of Goods Sold)[cite: 5].
-
------------------ End : COGS Setup -------------------
