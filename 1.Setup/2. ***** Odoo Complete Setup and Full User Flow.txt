@@ -403,6 +403,8 @@ se
 # Create Fixed Asset from Vendor Bill : Accounting -> Menu : Vendors -> select : Bills -> click : new -> set : Vendor , Date , add a line -> set : Account : 151000 Fixed Asset , set : Price -> click : Confirm (auto create Draft Asset) -> Accounting -> Menu : Accounting -> Assets -> select asset -> click : Compute Depreciation -> Confirm . 
 
 
+# Check Assets :  Account -> Menu -> select:  Configuration -> select : Assets -> now you can see the list view.  
+
 # Check Depreciation : Account -> Menu -> select:  Accounting -> Journal Entry ->  (in the search box : clear all for showing all journal). 
                        
                                                               -> General Ledger -> check : Expense account and Fixed assets account. 
