@@ -3,7 +3,7 @@
 
 #downlaod link for the 1 module => https://apps.odoo.com/apps/modules/20.0/om_account_accountant
 
-1. om_accounting_accountant
+1. om_accounting_accountant => https://github.com/OCA/account-financial-tools/tree/19.0/account_asset_management
 
 #downlaod link for the 2 and 3 module => https://github.com/oca/account-reconcile
 
@@ -15,6 +15,8 @@
 #pdf for invoice report in the local pc : 
 
 pip install wkhtmltopdf 
+
+4. download 'om_account_asset' from the github : 
 
 
 
@@ -31,6 +33,8 @@ Apps -> accounting moudle -> Bank -> configuration -> click 'outgoing Payments' 
 #***** apps : install the 'sales'
 #***** apps : install the 'contact' 
 #***** apps : install the 'Manufacture' (mrp)
+#***** apps : install the 'om_account_asset' (om_account_asset)
+
 
 => For the HRM : 
 ----------------
@@ -376,10 +380,40 @@ se
 
 
 
+----------------- End : HRM  -------------------
+
+
+----------------- Start : Fixed Assets  -------------------
+
+#setup : ***** apps : install the 'om_account_asset' (om_account_asset)
+--------
+
+# Create Asset Category (Asset Type) : Accounting -> Menu : Configuration -> select : Asset Types -> click : new -> set : Asset Type : Electronics
+                                        -> Journal Entries section => set : Journal : Miscellaneous Operations (Or you can set the separate Fixed assets journal) , set : Asset Account : 151000 Fixed Asset , set : Depreciation Entries: Asset Account : 151000 Fixed Asset , set : Depreciation Entries: Expense Account : 600000 Expenses.
+                                        -> Periodicity section => select : Time Method Based On : Number of Entries , set : Number of Entries : 24 (total month), set : One Entry Every : 1 months (after 1 month minus the depreciation values , if set 2 then after 2 month depreciation value minux ). 
+                                        -> Depreciation Method section => select : Computation Method : Linear , tik : Prorata Temporis -> save. 
+                                        -> Additional Options : tick : Auto-Compute Assets (for auto depreciation post directly ). 
+
+
+# Create Fixed Asset (Manual) : Accounting -> Menu : Accounting -> select : Assets -> click : new -> set : Asset Name : Laptop , select : Asset Category : Electronics , set : Date & First Depreciation Date
+                                -> set : Gross Value : 85,000.00 (Total price of the item), set : Salvage Value : 20,000.00 (after Depreciation we can sell laptop with this value )(Residual :  Value auto calculate : 65,000.00)( Residual = Gross - slavage )
+                                -> click : 'Compute Depreciation' btn (check tab : Depreciation Board for monthly schedule) -> click : 'Confirm' btn (status will be : Running)
+
+
+# Create Fixed Asset from Vendor Bill : Accounting -> Menu : Vendors -> select : Bills -> click : new -> set : Vendor , Date , add a line -> set : Account : 151000 Fixed Asset , set : Price -> click : Confirm (auto create Draft Asset) -> Accounting -> Menu : Accounting -> Assets -> select asset -> click : Compute Depreciation -> Confirm . 
+
+
+# Check Depreciation : Account -> Menu -> select:  Accounting -> Journal Entry ->  (in the search box : clear all for showing all journal). 
+                       
+                                                              -> General Ledger -> check : Expense account and Fixed assets account. 
+
+
+----------------- End :  Fixed Assets  -------------------
+
+
+
 
 ----------------- Start : System User  -------------------
-
-
 
 
 => Settings : click : manage user . -> click : new button . -> set : deatils -> tab: access right -> select all permission .  -> save . 
