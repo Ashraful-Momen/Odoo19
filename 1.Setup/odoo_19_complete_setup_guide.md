@@ -1,0 +1,276 @@
+# Odoo 19 Complete Setup & Functional Guide
+
+---
+
+## 1. Initial Setup, Modules & Localization
+
+### Third-Party Module Download Links
+1. **Accounting (`om_account_accountant`):** [Odoo Apps Store](https://apps.odoo.com/apps/modules/20.0/om_account_accountant)
+2. **Asset Management (`account_asset_management`):** [OCA GitHub Repository](https://github.com/OCA/account-financial-tools/tree/19.0/account_asset_management)
+3. **Bank Reconciliation (`account_statement_base` & `account_reconcile_oca`):** [OCA Account Reconcile](https://github.com/oca/account-reconcile)
+4. **Fixed Assets (`om_account_asset`):** Download `om_account_asset` from GitHub and place in `thirdparty_addons`.
+
+### Currency & PDF Setup
+* **Activate BDT Currency:** Go to `Apps` -> Search `L10` or `l10n_bd` -> Install/Activate.
+* **PDF Report Support (Local PC):**
+  ```bash
+  pip install wkhtmltopdf
+  ```
+
+### Bank Outstanding Balance Account Setup
+* **Incoming Payments:** `Accounting` -> `Configuration` -> `Journals` -> `Bank` -> `Incoming Payments` tab -> Set **Outstanding Receipts Account** = `101403 Outstanding Receipts`.
+* **Outgoing Payments:** `Accounting` -> `Configuration` -> `Journals` -> `Bank` -> `Outgoing Payments` tab -> Set **Outstanding Payments Account** = `101404 Outstanding Payments`.
+
+### Core Apps Installation (`Apps` Menu)
+* **Core Operations:**
+  * `stock` (Inventory)
+  * `purchase` (Purchase)
+  * `sales` (Sales)
+  * `contacts` (Contacts)
+  * `mrp` (Manufacturing)
+  * `om_account_asset` (Fixed Assets)
+* **HRM Modules:**
+  * `hr` (Employees)
+  * `hr_holidays` (Time Off)
+  * `hr_expense` (Expenses)
+  * `hr_attendance` (Attendances)
+
+---
+
+## 2. Company, Branch & Warehouse Setup
+
+### Company & Multi-Company Setup
+* **Update Company Name:** `Settings` -> `Manage Companies` -> Change the company name as desired -> **Save**.
+* **Multi-Company Setup:** `Settings` -> `Manage Companies` -> Click **New** -> Enter new company name and details -> **Save**.
+* **Branch Setup:** `Settings` -> `Manage Companies` -> Select a company -> `Branches` tab -> Click **Add a line** -> Enter branch details -> **Save**.
+
+### Basic Inventory & Warehouse Settings
+* **Product Tracking Options:** `Settings` -> `Inventory` (Left menu) -> Tick **Variants** -> Tick **Lots & Serial Numbers** -> **Save**.
+* **Warehouse Routing:** `Settings` -> `Inventory` (Left menu) -> Tick **Multi-Step Routes** -> **Save**.
+* **Create Warehouse:** `Inventory` -> `Configuration` -> `Warehouses` -> **New** -> Create warehouse with Branch selection and short name convention -> **Save**.
+
+---
+
+## 3. Vendor & Customer Setup
+*Ensure `purchase`, `sales`, and `contacts` apps are installed.*
+
+* **Create Vendor:** `Accounting` -> `Vendors` -> `Vendors` -> **New** -> Fill up vendor details (AR/AP accounts can remain default or be customized) -> **Save**.
+* **Create Customer:** `Accounting` -> `Customers` -> `Customers` -> **New** -> Fill up customer details -> **Save**.
+
+---
+
+## 4. Product Setup with Variants
+
+* **Create Product:** `Inventory` -> `Products` -> `Products` -> **New** -> Set Sales Price and Cost.
+  * `Accounting` tab:
+    * **Expense Account:** `500000 Cost of Goods Sold`
+    * **Income Account:** `450000 Other Income`
+  * `Product Category` settings:
+    * **Costing Method:** `FIFO`
+    * **Inventory Valuation:** `Perpetual` (Automated)
+    * **Force Removal Strategy:** `FIFO`
+* **Enable Product Variants:** `Inventory` -> `Configuration` -> `Settings` -> Tick **Variants** -> **Save**.
+* **Configure Variant Attributes:** 
+  1. `Inventory` -> `Configuration` -> `Attributes` -> **New** -> Set Attribute Name and Values -> **Save**.
+  2. Go to `Inventory` -> `Products` -> Select Product -> `Attributes & Variants` tab -> **Add a line** -> Select Attribute and Values.
+* **Lots & Serial Numbers:** `Inventory` -> `Products` -> Select Product -> `Inventory` tab -> Set **Tracking** = `By Unique Serial Number` -> **Save**.
+* **Availability:** Ensure **Sales** and **Purchase** checkboxes are ticked under the product name, and verify the **Company** field.
+
+---
+
+## 5. Purchase, Landed Costs & Bill Management
+
+### Standard Purchase Order (PO)
+* **Create PO:** `Purchase` -> **New** -> Select **Vendor** -> `Products` tab -> **Add a line** -> Select Product & Quantity -> Click **Confirm Order**.
+
+### Adding Additional Costs (Transport, Warehouse Rent, etc.)
+
+#### Method A: Direct PO Line (Service Product)
+1. **Create Expense Product:** `Purchase` -> `Products` -> **New** -> Set Name (e.g., `Transport Cost`), **Product Type** = `Service` -> `Purchase` tab -> Tick **Is a Landed Cost**, set **Default Split Method** (`By Quantity` / `Weight` / `Volume`) -> **Save**.
+2. **Add to PO:** `Purchase` -> `Orders` -> `Purchase Orders` -> **New** -> Select Vendor -> Add Main Product + Add Additional Cost Product -> **Confirm Order**.
+
+#### Method B: Landed Cost via Vendor Bill (Recommended for Stock Valuation)
+* **Prerequisite:** Install `purchase` module so the `Product` column appears on Vendor Bills.
+* **Step 1 (Enable Landed Costs):** `Inventory` -> `Configuration` -> `Settings` -> `Valuation` section -> Tick **Landed Costs** -> Set **Default Journal** -> **Save**. *(Note: Product Category must be `FIFO`/`AVCO` & `Automated Valuation`)*.
+* **Step 2 (Create Expense Item):** `Inventory` -> `Products` -> **New** -> Set Name (e.g., `Transport Cost`, `Warehouse Rent`), **Product Type** = `Service`, Tick **Purchase** (top checkbox) -> `Purchase` tab -> Tick **Is a Landed Cost**, set **Split Method** (e.g., `By Quantity`) -> **Save**.
+* **Step 3 (Vendor Bill):** `Accounting` -> `Vendors` -> `Bills` -> **New**.
+  * *(Tip: If the `Product` column is hidden in Invoice Lines, click the right-side slider/filter icon on the table header and tick **Product**).*
+  * Click **Add a line** -> Select Product (`Transport Cost`), set Price -> **Confirm** -> Click **Create Landed Costs** button.
+* **Step 4 (Apply to Stock):** In the Landed Cost form -> Select **Transfers** (Receipt number, e.g., `WH/IN/0001`) -> Click **Compute** (verify in `Valuation Adjustments` tab) -> Click **Validate**.
+
+### Receiving & Backorders
+* **Product Receive:**
+  * *Option 1:* `Purchase` -> `Orders` -> `Purchase Orders` -> Select Order -> Click **Receive** smart button -> **Validate**.
+  * *Option 2:* `Inventory` -> `Overview` -> `Receipts` -> Select Order -> **Validate**.
+* **Backorder (Partial Receive):** Open Receipt (`Ready` status) -> Set received quantity (e.g., `3` out of `5`) -> Click **Validate** -> Click **Create Backorder**.
+* **Check Stock & Transfers:**
+  * *Stock/Location:* `Inventory` -> `Reporting` -> `Stock` or `Locations`.
+  * *Status:* `Inventory` -> `Overview` -> `Receipts` (`Ready` / `Done`).
+  * *Receipts Only:* `Inventory` -> `Operations` -> `Receipts`.
+  * *Deliveries Only:* `Inventory` -> `Operations` -> `Deliveries`.
+
+### Vendor Bills, Payments & Reconciliation
+* **Create Bill:** `Purchase` -> `Orders` -> `Purchase Orders` -> Select Order -> Click **Create Bill** (or Upload Bill PDF) -> Verify quantity, price, and Bill Date -> **Confirm**.
+* **Pay Bill:** Open Bill -> Click **Pay** -> Select Journal/Account -> **Create Payment** (Status changes to `In Payment`).
+* **Delete Bill (if needed):** Open Bill -> Click **Reset to Draft** -> Click Action icon (`⚙️`) -> **Delete**.
+* **Bank Reconciliation (Vendor Bill):**
+  1. **Bank Statement:** `Accounting` -> `Accounting` -> `Bank Statements` -> **New** -> Set Reference (e.g., `BNK/2026/17`) -> Add line: Date, Partner (Vendor), **Amount** = `-500` *(negative for outgoing payment)* -> **Save**.
+  2. **Reconcile:** `Accounting` -> `Dashboard` -> Click **Reconcile Items** -> Select Bank Statement (left) -> Match with Bill (bottom right) -> Click **Reconcile**.
+  3. **Verify:** Check Bill status (`Paid`) and check `Accounting` -> `Accounting` -> `General Ledger` (`Bank`, `Outstanding Payments`, `Stock Valuation`, `Accounts Payable`).
+* **Check Purchase Journal:** Open Bill -> `Journal Items` tab.
+
+### Product Return & Vendor Refund
+* **Product Return:** `Inventory` -> `Overview` -> `Receipts` -> Select `Done` transfer -> Click **Return** -> Set return quantity -> Click **Return** -> **Validate**.
+* **Vendor Refund:**
+  1. `Accounting` -> `Vendors` -> `Refunds` -> **New** -> Select Vendor, Date, Auto-Complete Bill Reference, Quantity -> **Confirm** -> Click **Pay** -> **Create Payment**.
+  2. **Bank Statement:** Create new statement with **Amount** = `+100` *(positive for incoming refund)* -> **Save**.
+  3. **Reconcile:** `Accounting` -> `Dashboard` -> `Reconcile` -> Match Bank Statement with Refund -> Verify Dr/Cr -> Click **Reconcile**.
+  4. **Un-reconcile (if mistake):** `Accounting` -> `Dashboard` -> `Bank Transactions` -> Select statement -> Click **Unreconcile**.
+
+---
+
+## 6. Inventory Operations
+
+* **Warehouse List:** `Inventory` -> `Configuration` -> `Warehouses`.
+* **Multi-Step Shipment:** `Inventory` -> `Configuration` -> `Warehouses` -> Select Warehouse -> Set **Incoming Shipments** (`2 steps` or `3 steps` for quality control).
+* **Internal Branch Transfer:**
+  1. `Inventory` -> `Operations` -> `Internal` -> **New** -> Select Operation Type (Destination Warehouse), add Product & Demand Quantity -> **Save/Confirm**.
+  2. `Inventory` -> `Overview` -> Destination Warehouse -> Select transfer -> **Validate**.
+  3. Verify on-hand stock at `Inventory` -> `Reporting` -> `Stock`.
+* **Scrap Management:**
+  * Create Scrap: `Inventory` -> `Operations` -> `Scrap` -> **New** -> Select Product, Quantity, Lot/Serial Number -> **Validate**.
+  * Check Scrap History: `Inventory` -> `Reporting` -> `Stock` -> Click **History** on the product.
+* **Replenishment (MTO & Reordering Rules):**
+  1. `Inventory` -> `Configuration` -> `Settings` -> Enable **Replenish on Order (MTO)** -> **Save**.
+  2. `Inventory` -> `Configuration` -> `Routes` -> `Replenish on Order (MTO)` -> Tick **Products** and **Product Categories** -> **Save**.
+  3. Open Product -> `Inventory` tab -> Tick **Replenish on Order (MTO)** -> **Save**.
+  4. Click **Reordering Rules** smart button on Product -> Set **Trigger** (`Auto` or `Manual`), **Min Quantity**, and **Max Quantity** -> **Save**.
+
+---
+
+## 7. Sales & Customer Invoicing
+
+* **Create Sales Order (SO):** `Sales` -> `Orders` -> `Quotations` / `Orders` -> **New** -> Select Customer, Date, Product, Quantity, Unit Price -> Click **Confirm** (or **Send by Email** for quotation).
+* **Deliver Product:**
+  * *Option 1:* Open SO -> Click **Delivery** smart button -> Set Quantity -> **Validate**.
+  * *Option 2:* `Inventory` -> `Overview` -> `Delivery Orders` -> Select order -> **Validate**.
+* **Create Invoice & Reconcile:**
+  1. Open SO -> Click **Create Invoice** -> Select `Regular Invoice` -> **Create Draft** -> Set Invoice Date & Due Date -> **Confirm** -> Click **Pay** -> Select Journal, Payment Method, Bank -> **Create Payment**.
+  2. Create corresponding **Bank Statement** (`Accounting` -> `Accounting` -> `Bank Statements`) with positive amount.
+  3. Reconcile via `Accounting` -> `Dashboard` -> `Reconcile`.
+* **Accounting & Reports:**
+  * *Sales Journal:* `Accounting` -> `Accounting` -> `Sales`.
+  * *General Ledger:* `Accounting` -> `Accounting` -> `General Ledger`.
+  * *Profit & Loss:* `Accounting` -> `Reporting` -> `Profit and Loss`.
+
+---
+
+## 8. Manufacturing (MRP)
+
+* **Prerequisite:** Install `mrp` (`Manufacturing`) app.
+* **Create Raw Materials (Parts):** `Inventory` -> `Products` -> **New** -> Enter details, Cost & Sales price -> Tick **Purchase** only -> Set Accounting Expense account -> **Save**.
+* **Create Finished Goods:** `Inventory` -> `Products` -> **New** -> Enter details & Sales price -> Tick **Sales** & **Purchase** -> Set Income account -> **Save**.
+* **Purchase & Receive Parts:** Create PO for parts (`Purchase` -> `Orders` -> **New**) -> **Confirm** -> Click **Receipts** smart button -> **Validate** -> Verify updated stock in `Products`.
+* **Direct Manufacturing Order (MO):** `Manufacturing` -> `Operations` -> `Manufacturing Orders` -> **New** -> Select Finished Product & Quantity -> Add Components (Parts) & To Consume quantity -> **Confirm** -> Click **Generate Serial** -> Click **Produce All**.
+* **Bill of Materials (BOM Template):**
+  1. *Create BOM:* `Manufacturing` -> `Products` -> `Bills of Materials` -> **New** -> Select Finished Product & Quantity -> Add Components (Parts) & Quantities -> **Save**.
+  2. *Manufacture from BOM:* `Manufacturing` -> `Operations` -> `Manufacturing Orders` -> **New** -> Select **Bill of Material** -> **Confirm** -> **Generate Serial** -> **Produce All**.
+  3. Verify stock in `Manufacturing` -> `Products` -> `Products`.
+
+---
+
+## 9. Human Resource Management (HRM) & Payroll
+
+### Payroll Module Installation
+1. Add `thirdparty_addons` path in `odoo.conf`.
+2. Restart Odoo server from terminal and click **Update Apps List** in Odoo (Developer Mode).
+3. Go to `Apps` -> Search and activate `hr_payroll` and `hr_payroll_account_community`.
+
+### Employee & System User Setup
+* **Create Employee:** `Employees` -> **New**
+  * `Work Information` tab: Department, Company, Job Position, Job Title, Manager.
+  * `Resume` tab: Resume lines (Experience, Education, Training), Certificates, Skills.
+  * `Private Information` tab: Personal details.
+  * `Payroll` / `Contract` tab: Set **Wage** (Salary) and **Working Hours**.
+  * `Settings` tab: Set **Badge ID** and Expense responsible.
+* **Create System User:** Open Employee -> Click **Create User** -> **Save**.
+* **Manage User & Password:** `Settings` -> `Users & Companies` -> `Users` -> Select User -> Action (`⚙️`) -> **Change Password** -> **Save**.
+
+### Salary Rules, Structure & Payslips (Total = 100%)
+* **Configure Salary Rules:** `Payroll` -> `Configuration` -> `Salary Rules`
+  * **Basic Salary (60%):** `General` tab -> **Amount Type** = `Percentage`, **Percentage** = `60%`, **Percentage based on** = `contract.wage`. `Accounting` tab -> **Debit Account** = `630000 Salary Expenses`, **Credit Account** = `101401 Bank` -> **Save**.
+  * **House Rent Allowance (40%):** `General` tab -> **Amount Type** = `Percentage`, **Percentage** = `40%`, **Percentage based on** = `contract.wage`. `Accounting` tab -> **Debit Account** = `630000 Salary Expenses`, **Credit Account** = `101401 Bank` -> **Save**.
+* **Salary Structure:** `Payroll` -> `Configuration` -> `Salary Structures` -> Select Structure -> Add lines: `Basic Salary` (60%) and `House Rent Allowance` (40%) -> **Save**.
+* **Generate Employee Payslip:**
+  1. `Payroll` -> `Payslips` -> `Employee Payslips` -> **New** -> Select Employee & Salary Structure.
+  2. `Accounting Information` tab -> Set **Salary Journal** = `Miscellaneous Operations`.
+  3. Click **Compute Sheet** -> Verify amounts in `Salary Computation` tab -> Click **Confirm**.
+  4. *Print Payslip:* Open Employee -> Click **Payslips** smart button -> Select payslip -> **Print**.
+
+### Attendance, Time Off (Leave) & Public Holidays
+* **Attendance:** `Attendances` -> **New** -> Select Employee, **Check In**, and **Check Out** -> **Save**.
+* **Leave Types & Allocation:**
+  1. `Time Off` -> `Configuration` -> `Time Off Types` -> Select `Paid Time Off` -> Set Approval (`By Time Off Officer`), Notify HR, and Allocation Approval -> **Save**.
+  2. `Time Off` -> `Management` -> `Allocations` -> **New** -> Select `Paid Time Off`, Employee, Days, and Validity Period -> **Save** -> **Approve**.
+* **Request & Approve Leave:**
+  * *Employee Request:* `Time Off` -> `My Time Off` -> **New** -> Select Type, Dates, Reason -> **Save**.
+  * *Manager Approval:* `Time Off` -> `Management` -> `Time Off` -> Select request -> **Approve** (Verify remaining days in `Allocations` -> `Current Balance`).
+* **Public Holidays:** `Time Off` -> `Configuration` -> `Public Holidays` -> **New** -> Set Name, Start/End Date, Working Hours -> **Save**.
+
+---
+
+## 10. Fixed Assets & Depreciation
+
+* **Prerequisite:** Install `om_account_asset` module.
+
+### Step 1: Create Asset Category (Asset Type)
+* **Menu:** `Accounting` -> `Configuration` -> `Asset Types` -> **New**
+* **General:** Set **Asset Type** = `Electronics`.
+* **Journal Entries Section:**
+  * **Journal:** `Miscellaneous Operations` (or a dedicated Fixed Assets journal).
+  * **Asset Account:** `151000 Fixed Asset`.
+  * **Depreciation Entries: Asset Account:** `151000 Fixed Asset`.
+  * **Depreciation Entries: Expense Account:** `600000 Expenses`.
+* **Periodicity Section:**
+  * **Time Method Based On:** `Number of Entries`.
+  * **Number of Entries:** `24` (Total installments/months).
+  * **One Entry Every:** `1` months *(deducts depreciation every 1 month; if set to 2, deducts every 2 months)*.
+* **Depreciation Method & Additional Options:**
+  * **Computation Method:** `Linear`.
+  * **Prorata Temporis:** Tick if calculating daily from exact purchase date; untick for equal monthly installments from First Depreciation Date.
+  * **Auto-Confirm Assets:** Tick this checkbox so generated depreciation entries post directly.
+  * Click **Save**.
+
+### Step 2: Create Fixed Asset (Manual Entry)
+* **Menu:** `Accounting` -> `Accounting` -> `Assets` -> **New**
+* **Details:** Set **Asset Name** = `Laptop`, **Asset Category** = `Electronics`, **Date**, and **First Depreciation Date**.
+* **Values:**
+  * **Gross Value:** `85,000.00` (Total purchase price).
+  * **Salvage Value:** `20,000.00` (Estimated resale value after full depreciation).
+  * **Residual Value:** Auto-calculated as `65,000.00` ($\text{Residual} = \text{Gross} - \text{Salvage}$).
+* **Schedule & Confirm:** Click **Compute Depreciation** (check monthly schedule in `Depreciation Board` tab) -> Click **Confirm** (Status changes to `Running`).
+
+### Step 3: Create Fixed Asset from Vendor Bill
+* **Menu:** `Accounting` -> `Vendors` -> `Bills` -> **New** -> Select Vendor & Date -> Add line: Set **Account** = `151000 Fixed Asset`, set Price -> **Confirm** *(automatically creates a Draft Asset)*.
+* Go to `Accounting` -> `Accounting` -> `Assets` -> Open the generated asset -> Click **Compute Depreciation** -> **Confirm**.
+
+### Step 4: Check Assets & Depreciation Entries
+* **View Assets List:** `Accounting` -> `Accounting` -> `Assets` (or `Configuration` -> `Assets`).
+* **Check Depreciation Journals:** `Accounting` -> `Accounting` -> `Journal Entries` -> Clear the `Posted` filter in the search bar to view both posted and draft entries.
+* **Check General Ledger:** `Accounting` -> `Accounting` -> `General Ledger` -> Inspect `600000 Expenses` and `151000 Fixed Asset` balances.
+
+---
+
+## 11. System User Permissions
+
+* **Create User & Access Rights:** `Settings` -> `Users & Companies` -> `Users` -> **New** -> Enter Name & Email -> `Access Rights` tab -> Select required module permissions -> **Save**.
+* **Change Password:** `Settings` -> `Users & Companies` -> `Users` -> Select User -> Click Action (`⚙️`) -> **Change Password** -> **Save**.
+* **Link User to Employee:** Open User -> Click **Create Employee** -> **Save**.
+
+---
+
+## 12. COGS (Cost of Goods Sold) Setup
+
+* **Step 1 (Product Category):** `Inventory` -> `Configuration` -> `Product Categories` -> Select Category (e.g., `All`) -> Set **Costing Method** = `FIFO` (or `AVCO`), **Inventory Valuation** = `Automated (Perpetual)` -> Under Account Properties set **Expense Account** = `500000 Cost of Goods Sold`, **Stock Valuation Account**, **Stock Input Account**, and **Stock Output Account** -> **Save**.
+* **Step 2 (Product Setup):** `Inventory` -> `Products` -> Select Product -> Set **Product Type** = `Goods` (with **Track Inventory** checked), select **Product Category**, set **Cost** -> **Save**.
+* **Step 3 (Verify COGS):** Confirm Sales Order -> Validate Delivery -> Confirm Customer Invoice -> Go to `Accounting` -> `Reporting` -> `Profit and Loss` to verify **Cost of Goods Sold**.
